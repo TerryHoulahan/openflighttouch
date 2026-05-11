@@ -1,79 +1,198 @@
+:root {
+  --bg: #020617;
+  --panel: rgba(15, 23, 42, 0.92);
+  --line: #1e3a8a;
+  --text: #f8fafc;
+  --muted: #7dd3fc;
+  --button: #0f172a;
+  --button-border: #334155;
+  --active: #2563eb;
+  --danger: #7f1d1d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
   margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(circle at top, #111827, #020617);
-  color: white;
+  width: 100%;
+  min-height: 100%;
+  background: radial-gradient(circle at top, #111827, var(--bg));
+  color: var(--text);
   font-family: system-ui, sans-serif;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+body {
+  min-height: 100svh;
 }
 
 #app {
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  min-height: 100svh;
+  padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
   display: grid;
-  place-items: center;
-  gap: 16px;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
 }
 
 #status {
-  color: #38bdf8;
-  font-size: 14px;
-  letter-spacing: 2px;
+  color: var(--muted);
+  font-size: clamp(11px, 2.8vw, 14px);
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  text-align: center;
+  line-height: 1.1;
 }
 
 .control-card {
-  width: min(320px, 92vw);
-  border: 1px solid #1e3a8a;
-  border-radius: 28px;
-  padding: 20px;
-  background: rgba(15, 23, 42, 0.92);
-  box-shadow: 0 0 40px rgba(59, 130, 246, 0.25);
-  text-align: center;
+  width: 100%;
+  max-width: 520px;
+  min-height: 0;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 12px;
+  background: var(--panel);
+  box-shadow: 0 0 28px rgba(59, 130, 246, 0.18);
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 10px;
+  overflow: hidden;
 }
 
 h1 {
-  margin: 0 0 12px;
-  letter-spacing: 7px;
-  font-size: 28px;
+  margin: 0;
+  letter-spacing: 0.45em;
+  font-size: clamp(22px, 7vw, 38px);
+  text-align: center;
+  line-height: 1;
 }
 
 .value-display {
-  margin: 10px auto 18px;
-  width: 90px;
-  height: 58px;
+  margin: 0 auto;
+  width: clamp(72px, 24vw, 110px);
+  height: clamp(42px, 9svh, 62px);
   display: grid;
   place-items: center;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #020617;
-  border: 1px solid #334155;
-  color: #7dd3fc;
-  font-size: 32px;
+  border: 1px solid var(--button-border);
+  color: var(--muted);
+  font-size: clamp(26px, 8vw, 40px);
   font-weight: 700;
 }
 
 .number-stack {
+  min-height: 0;
   display: grid;
-  gap: 8px;
+  grid-template-rows: repeat(11, 1fr);
+  gap: 6px;
 }
 
 button {
   appearance: none;
-  border: 1px solid #334155;
-  border-radius: 16px;
-  background: #0f172a;
-  color: white;
-  font-size: 22px;
-  padding: 11px;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid var(--button-border);
+  border-radius: 14px;
+  background: var(--button);
+  color: var(--text);
+  font-size: clamp(18px, 5vw, 28px);
+  font-weight: 650;
+  padding: 4px 8px;
 }
 
 button:active {
-  background: #2563eb;
-  transform: scale(0.98);
+  background: var(--active);
+  transform: scale(0.985);
 }
 
 .center-button {
-  margin-top: 14px;
-  width: 100%;
-  background: #7f1d1d;
+  height: clamp(42px, 8svh, 58px);
+  background: var(--danger);
+  letter-spacing: 0.12em;
+}
+
+/* Landscape: make pitch compact and leave room for future roll/throttle panels */
+@media (orientation: landscape) {
+  #app {
+    padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+      max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    grid-template-rows: auto 1fr;
+  }
+
+  .control-card {
+    max-width: none;
+    height: calc(100svh - 42px);
+    grid-template-columns: 0.65fr 1.4fr;
+    grid-template-rows: auto auto 1fr;
+    column-gap: 12px;
+    row-gap: 8px;
+  }
+
+  h1 {
+    grid-column: 1 / -1;
+    font-size: clamp(20px, 4vw, 30px);
+  }
+
+  .value-display {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+  }
+
+  .number-stack {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    gap: 5px;
+  }
+
+  .center-button {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+  }
+
+  button {
+    font-size: clamp(15px, 3vw, 22px);
+    border-radius: 12px;
+  }
+}
+
+/* Very short screens */
+@media (max-height: 700px) and (orientation: portrait) {
+  #app {
+    gap: 6px;
+  }
+
+  .control-card {
+    padding: 10px;
+    gap: 7px;
+    border-radius: 18px;
+  }
+
+  .number-stack {
+    gap: 4px;
+  }
+
+  button {
+    font-size: 18px;
+    border-radius: 11px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .value-display {
+    height: 42px;
+    font-size: 26px;
+  }
+
+  .center-button {
+    height: 42px;
+  }
 }
