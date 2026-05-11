@@ -2,7 +2,7 @@ let socket = null;
 
 export function connectSocket(onStatusChange) {
     const host = window.location.hostname;
-    socket = new WebSocket("wss://YOUR-TUNNEL.trycloudflare.com");
+    socket = new WebSocket("wss://wellington-org-ballet-nov.trycloudflare.com");
     socket.onopen = () => onStatusChange("Connected");
     socket.onclose = () => {
         onStatusChange("Disconnected");
