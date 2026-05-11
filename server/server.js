@@ -1,4 +1,4 @@
-import https from "https";
+import http from "http";
 import fs from "fs";
 import path from "path";
 import os from "os";
@@ -53,38 +53,31 @@ function safeJoin(root, requestPath) {
   return filePath;
 }
 
-// GitHub Pages uses /docs now, but keep /web fallback for old local structure.
 const ip = getLocalIp();
 const docsRoot = path.resolve(__dirname, "../docs");
 const webRoot = path.resolve(__dirname, "../web");
 const staticRoot = fs.existsSync(docsRoot) ? docsRoot : webRoot;
 
-const server = https.createServer(
-  {
-    key: fs.readFileSync("key.pem"),
-    cert: fs.readFileSync("cert.pem")
-  },
-  (req, res) => {
-    const filePath = safeJoin(staticRoot, req.url);
+const server = http.createServer((req, res) => {
+  const filePath = safeJoin(staticRoot, req.url);
 
-    if (!filePath) {
-      res.writeHead(403);
-      res.end("Forbidden");
+  if (!filePath) {
+    res.writeHead(403);
+    res.end("Forbidden");
+    return;
+  }
+
+  fs.readFile(filePath, (error, data) => {
+    if (error) {
+      res.writeHead(404);
+      res.end("Not found");
       return;
     }
 
-    fs.readFile(filePath, (error, data) => {
-      if (error) {
-        res.writeHead(404);
-        res.end("Not found");
-        return;
-      }
-
-      res.writeHead(200, { "Content-Type": getContentType(filePath) });
-      res.end(data);
-    });
-  }
-);
+    res.writeHead(200, { "Content-Type": getContentType(filePath) });
+    res.end(data);
+  });
+});
 
 const wss = new WebSocketServer({ server });
 
@@ -113,6 +106,6 @@ wss.on("connection", (ws) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`OpenFlightTouch HTTPS running at: https://${ip}:${PORT}`);
+  console.log(`OpenFlightTouch HTTP running at: http://${ip}:${PORT}`);
   console.log(`Serving frontend from: ${staticRoot}`);
 });
