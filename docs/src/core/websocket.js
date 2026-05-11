@@ -2,8 +2,7 @@ let socket = null;
 
 export function connectSocket(onStatusChange) {
     const host = window.location.hostname;
-    socket = new WebSocket(`wss://${host}:8443`);
-
+    socket = new WebSocket(`wss://192.168.0.45:8443`);
     socket.onopen = () => onStatusChange("Connected");
     socket.onclose = () => {
         onStatusChange("Disconnected");
